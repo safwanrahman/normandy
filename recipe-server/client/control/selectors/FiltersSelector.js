@@ -54,13 +54,12 @@ export const getActiveFilterOptions = state =>
       const newGroup = { ...group };
       // remove non-selected filters
       const activeOptions = [].concat(group.options)
-        .filter(option => option.selected);
+        .filter(option => option.selected)
+        .map(option => ({ ...option }));
 
       newGroup.options = activeOptions;
 
       return newGroup;
-      // filtering x=>x will remove any null array members
-      // (e.g. [1,null,2] becomes [1,2])
     }).filter(x => x);
 
 
@@ -128,3 +127,16 @@ export const getAvailableFilters = state =>
  */
 export const isFilteringActive = state =>
   getActiveFilterOptions(state).length > 0;
+
+/**
+ * Get all filters as an object keyed on their slug
+ *
+ * @param  {Array<Object>} groups All filter groups
+ * @return {Object}               Object of filters keyed by their slug
+ */
+export const getFilterObject = groups =>
+  groups.reduce((optionsMap, group) => {
+    optionsMap[group.value] = group.options;
+    return optionsMap;
+  }, {});
+
